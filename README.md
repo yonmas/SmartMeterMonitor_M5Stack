@@ -15,49 +15,45 @@ M5StickC Plus + Wi-SUNモジュール BP35A1 で、小電力スマートメー�
 - 1時間毎の使用電力量内訳（前日との比較）
 - 1時間毎の使用電力量内訳（直近7日間平均との比較）
 
-システム全体は、@rin-ofumiさんのこちらの記事をベースにしています。Wi-SUN HAT の作者さんです。<br>
+システム全体は、 @rin-ofumi さんのこちらの記事をベースにしています。Wi-SUN HAT の作者さんです。<br>
 https://kitto-yakudatsu.com/archives/7206
 
-子機のシステムは、@rin-ofumiさんの以下のコードをベースにしています。</br>
+子機のシステムは、 @rin-ofumi さんの以下のコードをベースにしています。</br>
 https://github.com/rin-ofumi/m5stickc_wisun_hat
 
-親機のシステムと全体の表示形式は、@miyaichiさんの以下のコードをベースにしています。</br>
+親機のシステムと全体の表示形式は、 @miyaichi さんの以下のコードをベースにしています。</br>
 https://github.com/miyaichi/SmartMeter
 
-===　構成 ===
 
-**■■ 親機（main)：M5StickC Plus + Wi-SUN HAT(with BP35A1 module) ■■**
+```
+■■ 親機（main)：M5StickC Plus + Wi-SUN HAT(with BP35A1 module) ■■
 
 /apps/
-
 - SMM2.py　（メインプログラム : 子機のMACアドレスを記載）
 
 /
-
 - BP35A1.py （BP35A1クラス)
 - smm2_main_set.json (親機設定ファイル ： ルートB情報、Ambient情報を記載)
 - calc_charge.json (電気料金計算モジュール)
 - calender_2022.json (月別検針日 ： 前年12月〜当年12月 の 13ヶ月)
 - ambient.py (別途準備)
 - logging.py (別途準備)
-
-**■■ 子機(sub)：M5Stack Basic ■■**
+```
+```
+■■ 子機(sub)：M5Stack Basic ■■
 
 /apps/
-
 - SMM2_sub.py (子機メインプログラム : 親機のMACアドレスを記載)
 
 /
-
 - smm2_set.json (子機設定ファイル)
+```
 
-===　構成 ===
 
-ambient.py -> 
-https://github.com/AmbientDataInc/ambient-python-lib/blob/master/ambient.py
+[ambient.py](https://github.com/AmbientDataInc/ambient-python-lib/blob/master/ambient.py)
 
-logging.py -> 
-https://github.com/micropython/micropython-lib/blob/master/python-stdlib/logging/logging.py
+[logging.py](https://github.com/micropython/micropython-lib/blob/master/python-stdlib/logging/logging.py)
+
 
 初めてGitHubに登録して、あれこれ弄っている段階ですので、至らない箇所があると思います。</br>
 お気づきの点など、ビシバシご指摘いただけますとありがたいです。</br>
