@@ -13,14 +13,14 @@ https://github.com/miyaichi/SmartMeter
 
 /apps/
 
-- SMM2.py　（メインプログラム）
+- SMM2.py　（メインプログラム : 子機のMACアドレスを記載）
 
 /
 
 - BP35A1.py （BP35A1クラス)
-- SmartMeter.json (親機設定ファイル ： ルートB情報、Ambient情報)
+- SmartMeter.json (親機設定ファイル ： ルートB情報、Ambient情報を記載)
 - calc_charge.json (電気料金計算モジュール)
-- calender_2022.json (月別検針日)
+- calender_2022.json (月別検針日 ： 前年12月〜当年12月 の 13ヶ月)
 - ambient.py (別途準備)
 - logging.py (別途準備)
 
@@ -28,7 +28,7 @@ https://github.com/miyaichi/SmartMeter
 
 /apps/
 
-- SMM2_sub.py
+- SMM2_sub.py (子機メインプログラム : 親機のMACアドレスを記載)
 
 /
 
@@ -37,6 +37,6 @@ https://github.com/miyaichi/SmartMeter
 ===　構成 ===
 
 初めてGitHubに登録して、あれこれ弄っている段階ですので、至らない箇所があると思います。</br>
-お気づきの点などあれば、ビシバシご指摘ください。</br>
+お気づきの点など、ビシバシご指摘いただけますとありがたいです。</br>
 
 よしなに。
