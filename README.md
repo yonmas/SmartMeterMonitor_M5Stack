@@ -1,10 +1,13 @@
 # SMM2
 M5StickC / M5Stack でスマートメーター・ハッキング with Wi-SUN HAT
 
-Wi-SUN HATを含む、全体のシステムと子機表示は、@rin-ofumiさんの以下のコードをベースにしています。</br>
+システム全体は、@rin-ofumiさんのこちらの記事をベースにしています。Wi-SUN HAT の作者さんです。<br>
+https://kitto-yakudatsu.com/archives/7206
+
+子機のシステムは、@rin-ofumiさんの以下のコードをベースにしています。</br>
 https://github.com/rin-ofumi/m5stickc_wisun_hat
 
-親機のシステムと表示形式は、@miyaichiさんの以下のコードをベースにしています。</br>
+親機のシステムと全体の表示形式は、@miyaichiさんの以下のコードをベースにしています。</br>
 https://github.com/miyaichi/SmartMeter
 
 ===　構成 ===
