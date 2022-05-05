@@ -14,7 +14,7 @@ M5StickC Plus + Wi-SUNモジュール BP35A1 で、各家庭の小電力スマ�
 - 1時間毎の使用電力量内訳（前日との比較）
 - 1時間毎の使用電力量内訳（直近7日間平均との比較）
 
-システム全体は、 @rin-ofumi さんのこちらの記事をベースにしています。Wi-SUN HAT の作者さんです。<br>
+システム全体は、 @rin-ofimi さんのこちらの記事をベースにしています。Wi-SUN HAT の作者さんです。<br>
 https://kitto-yakudatsu.com/archives/7206
 
 子機のシステムは、 @rin-ofumi さんの以下のコードをベースにしています。</br>
