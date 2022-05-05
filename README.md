@@ -42,6 +42,12 @@ https://github.com/miyaichi/SmartMeter
 
 ===　構成 ===
 
+ambient.py -> 
+https://github.com/AmbientDataInc/ambient-python-lib/blob/master/ambient.py
+
+logging.py -> 
+https://github.com/micropython/micropython-lib/blob/master/python-stdlib/logging/logging.py
+
 初めてGitHubに登録して、あれこれ弄っている段階ですので、至らない箇所があると思います。</br>
 お気づきの点など、ビシバシご指摘いただけますとありがたいです。</br>
 
