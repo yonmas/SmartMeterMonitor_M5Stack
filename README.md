@@ -1,4 +1,4 @@
-# SMM2
+# M5StickC / M5Stack でスマートメーター・ハッキング
 
 ![](https://user-images.githubusercontent.com/104808539/166867477-ab20fcc8-4fde-4fc2-acc3-3494b3b07c65.jpg)
 
