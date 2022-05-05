@@ -21,7 +21,7 @@ https://github.com/miyaichi/SmartMeter
 /
 
 - BP35A1.py （BP35A1クラス)
-- SmartMeter.json (親機設定ファイル ： ルートB情報、Ambient情報を記載)
+- smm2_main_set.json (親機設定ファイル ： ルートB情報、Ambient情報を記載)
 - calc_charge.json (電気料金計算モジュール)
 - calender_2022.json (月別検針日 ： 前年12月〜当年12月 の 13ヶ月)
 - ambient.py (別途準備)
