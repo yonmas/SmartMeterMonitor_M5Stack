@@ -1,8 +1,19 @@
-# M5StickC / M5Stack でスマートメーター・ハッキング
+# M5StickC/M5Stack でスマートメーター・ハッキング
 
 ![](https://user-images.githubusercontent.com/104808539/166867477-ab20fcc8-4fde-4fc2-acc3-3494b3b07c65.jpg)
 
-M5StickC / M5Stack でスマートメーター・ハッキング with Wi-SUN HAT
+M5StickC/M5Stack でスマートメーター・ハッキング with Wi-SUN HAT
+
+M5StickC Plus + Wi-SUNモジュール BP35A1 で、小電力スマートメーターから電力使用量のデータを取得。親機、子機にいろいろ表示します。<br>
+
+- 瞬時電力
+- 瞬時電流
+- 直近検針日からの積算電力量
+- 直近検針日からの電気代（基本料金＋従量料金）
+- 30分ごとの使用電力量グラフ（当日、前日との比較）
+- 0時からの使用電力量と直近7日間およびその平均との比較棒グラフ
+- 1時間毎の使用電力量内訳（前日との比較）
+- 1時間毎の使用電力量内訳（直近7日間平均との比較）
 
 システム全体は、@rin-ofumiさんのこちらの記事をベースにしています。Wi-SUN HAT の作者さんです。<br>
 https://kitto-yakudatsu.com/archives/7206
