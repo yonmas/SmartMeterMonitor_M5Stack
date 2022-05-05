@@ -1,10 +1,9 @@
-# M5StickC/M5Stack でスマートメーター・ハッキング
+## M5StickC/M5Stack でスマートメーター・ハッキング with Wi-SUN HAT
 
 ![](https://user-images.githubusercontent.com/104808539/166867477-ab20fcc8-4fde-4fc2-acc3-3494b3b07c65.jpg)
 
-M5StickC/M5Stack でスマートメーター・ハッキング with Wi-SUN HAT
-
-M5StickC Plus + Wi-SUNモジュール BP35A1 で、小電力スマートメーターから電力使用量のデータを取得。親機、子機にいろいろ表示します。<br>
+## 概要
+M5StickC Plus + Wi-SUNモジュール BP35A1 で、各家庭の小電力スマートメーターから電力使用量のデータを取得。親機、子機にいろいろ表示します。たぶん節電に役立ちます。<br>
 
 - 瞬時電力
 - 瞬時電流
@@ -24,7 +23,20 @@ https://github.com/rin-ofumi/m5stickc_wisun_hat
 親機のシステムと全体の表示形式は、 @miyaichi さんの以下のコードをベースにしています。</br>
 https://github.com/miyaichi/SmartMeter
 
+## 部品リスト
+#### 親機 ：
+- M5StickC Plus (¥3,564) --> [スイッチサイエンス](https://www.switch-science.com/catalog/6470/)
+- BP35A1 モジュール (¥8,620) --> [チップワンストップ](https://www.chip1stop.com/view/searchResult/SearchResultTop?classCd=&did=&cid=netcompo&keyword=BP35A1&utm_source=netcompo&utm_medium=buyNow)
+- Wi-SUN HAT (¥1,650) --> [スイッチサイエンス](https://www.switch-science.com/catalog/7612/)
 
+#### 子機 :（オプション）
+- M5Stack Basic (¥5,874) --> [スイッチサイエンス](https://www.switch-science.com/catalog/7362/)
+
+## 準備
+電力会社にBルートサービスの利用開始を申し込み、認証IDとパスワードを取得する。</br>
+--> [東京電力申込みサイト](https://www.tepco.co.jp/pg/consignment/liberalization/smartmeter-broute.html)
+
+## ファイル構成
 ```
 ■■ 親機（main)：M5StickC Plus + Wi-SUN HAT(with BP35A1 module) ■■
 
@@ -49,12 +61,12 @@ https://github.com/miyaichi/SmartMeter
 - smm2_set.json (子機設定ファイル)
 ```
 
-
+## download
 [ambient.py](https://github.com/AmbientDataInc/ambient-python-lib/blob/master/ambient.py)
 
 [logging.py](https://github.com/micropython/micropython-lib/blob/master/python-stdlib/logging/logging.py)
 
-
+## おわりに
 初めてGitHubに登録して、あれこれ弄っている段階ですので、至らない箇所があると思います。</br>
 お気づきの点など、ビシバシご指摘いただけますとありがたいです。</br>
 
