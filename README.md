@@ -1,4 +1,7 @@
 # SMM2
+
+![](https://user-images.githubusercontent.com/104808539/166867477-ab20fcc8-4fde-4fc2-acc3-3494b3b07c65.jpg)
+
 M5StickC / M5Stack でスマートメーター・ハッキング with Wi-SUN HAT
 
 システム全体は、@rin-ofumiさんのこちらの記事をベースにしています。Wi-SUN HAT の作者さんです。<br>
