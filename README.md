@@ -1,6 +1,6 @@
 ## M5StickC/M5Stack でスマートメーター・ハッキング with Wi-SUN HAT
 
-![](https://user-images.githubusercontent.com/104808539/166867477-ab20fcc8-4fde-4fc2-acc3-3494b3b07c65.jpg)
+![Collage_Fotor](https://user-images.githubusercontent.com/104808539/166885813-86737337-00c2-421f-a8a8-5c4fb0433924.jpg)
 
 ## 概要
 M5StickC Plus + Wi-SUNモジュール BP35A1 で、各家庭の小電力スマートメーターから電力使用量のデータを取得。親機、子機にいろいろ表示します。たぶん節電に役立ちます。<br>
