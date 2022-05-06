@@ -1,4 +1,4 @@
-# M5StickC/M5Stack でスマートメーター・ハッキング with Wi-SUN HAT
+# M5StickC/M5Stack でスマートメーター・モニタリング with Wi-SUN HAT
 
 ![Collage_Fotor](https://user-images.githubusercontent.com/104808539/166885813-86737337-00c2-421f-a8a8-5c4fb0433924.jpg)
 
