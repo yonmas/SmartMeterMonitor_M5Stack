@@ -90,7 +90,7 @@ Ambient でアカウントを作成し、チャネルを作成。チャネルID�
 * Bボタン長押し : 履歴データの取得（数分かかります）
 * Cボタン : 警告BEEPのオン／オフ
 
-## 表示内容の解説
+## 表示内容の説明
 
 ![IMG_3162](https://user-images.githubusercontent.com/104808539/167132181-2a12b02c-01de-4133-ab9a-4a698b209ea5.JPG)
 
