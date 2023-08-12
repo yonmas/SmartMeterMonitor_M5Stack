@@ -34,7 +34,7 @@ M5StickC Plus + Wi-SUNモジュール BP35A1 で、各家庭の低圧スマー�
 
 ### 子機 :（オプション）
 
-- M5Stack Basic (¥5,874) --> [スイッチサイエンス](https://www.switch-science.com/catalog/7362/)
+- M5Stack Basic (¥5,874) --> [スイッチサイエンス](https://www.switch-science.com/catalog/7362/)  
 （ファーム v1.10.1 まで対応。v1.10.2 以降では ESPNOW の仕様変更の為エラーになります。）
 
 ## 準備
