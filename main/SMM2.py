@@ -246,9 +246,9 @@ if __name__ == '__main__':
                               callback=checkWiFi)
 
         # ESP NOW設定
-        import espnow
+        import espnow   # 先頭部分とダブり
         espnow.init()
-        espnow.add_peer(esp_mac_slave1, id = 2)
+        espnow.add_peer(esp_mac_slave1, id = 2) # send > broadcast に変更したので未使用
         status('ESP NOW init')
 
         # Set Time
@@ -351,7 +351,8 @@ if __name__ == '__main__':
             # 'COE' 積算電力係数のリクエストに応答
             if key.startswith('COE') :
                 if coe_flag == 0 :
-                    espnow.send(id = 2, data=str('COE=' + str(coefficient)))
+                    # espnow.send(id = 2, data=str('COE=' + str(coefficient)))  複数子機に対応するため broadcast に変更
+                    espnow.broadcast(data=str('COE=' + str(coefficient)))
                     coe_flag = 1
                     init_flag = [0] * 8
                     tp_flag = False
@@ -377,7 +378,8 @@ if __name__ == '__main__':
                         init_flag[n] = 1
                         print('== accept a request ==', key,n,init_flag[n])
                         init_data = get_init_data(n)
-                        espnow.send(id = 2, data=init_data)
+                        # espnow.send(id = 2, data=init_data)   複数子機に対応するため broadcast に変更
+                        espnow.broadcast(data=init_data)
                         logger.info('EPS NOW Sending ' + str('init data =' + str(init_data)))
                         print('')
                         print('send init_DATA for REQ',n,init_flag[n])
