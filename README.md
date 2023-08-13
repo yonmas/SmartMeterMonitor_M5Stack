@@ -53,13 +53,13 @@ Ambient でアカウントを作成し、チャネルを作成。チャネルID�
 ■■ 親機（main)：M5StickC Plus + Wi-SUN HAT(with BP35A1 module) ■■
 
 /apps/
-  +- SMM2.py　（メインプログラム : 子機のMACアドレスを記載）
+  +- SMM2.py
 
 /
   +- BP35A1.py （BP35A1クラス)
   +- smm2_main_set.json (親機設定ファイル ： ルートB情報、Ambient情報を記載)
   +- calc_charge.json (電気料金計算モジュール)
-  +- calender_2022.json (月別検針日 ： 前年12月〜当年12月 の 13ヶ月)
+  +- calender_2023.json (月別検針日 ： 前年12月〜当年12月 の 13ヶ月)
   +- ambient.py (別途準備)
   +- logging.py (別途準備)
 ```
