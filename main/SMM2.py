@@ -11,9 +11,6 @@ import utime
 import wifiCfg
 from BP35A1 import BP35A1
 
-# 子機のMACアドレス
-esp_mac_slave1 = 'ff:ff:ff:ff:ff:ff'
-
 # Global variables
 logger = None               # Logger object
 logger_name = 'SMM2'        # Logger name
@@ -223,6 +220,8 @@ def get_init_data(n) :
 
 if __name__ == '__main__':
 
+    retries = 0
+
     try:
         # Initialize logger
         logger = logging.getLogger(logger_name)
@@ -246,9 +245,7 @@ if __name__ == '__main__':
                               callback=checkWiFi)
 
         # ESP NOW設定
-        import espnow   # 先頭部分とダブり
-        espnow.init()
-        espnow.add_peer(esp_mac_slave1, id = 2) # send > broadcast に変更したので未使用
+        espnow.init(0)
         status('ESP NOW init')
 
         # Set Time
@@ -330,7 +327,6 @@ if __name__ == '__main__':
 
         amperage = power_kw = power_kwh = charge = 0
         update = collect = 'YYYY-MM-DD hh:mm:ss'
-        retries = 0
         
         np_c = utime.time() - 100  # NPD タイマー
         tp_c = utime.time() - 100  # TPD タイマー

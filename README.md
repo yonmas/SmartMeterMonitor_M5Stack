@@ -24,6 +24,8 @@ M5StickC Plus + Wi-SUNモジュール BP35A1 で、各家庭の低圧スマー�
 親機のシステムと全体の表示形式は、 @miyaichi さんの以下のコードをベースにしています。  
 <https://github.com/miyaichi/SmartMeter>
 
+（2023.8.13 ファーム v1.12.2 にて動作を確認。）
+
 ## 部品リスト
 
 ### 親機
@@ -64,7 +66,6 @@ Ambient でアカウントを作成し、チャネルを作成。チャネルID�
 
 ```text
 ■■ 子機(sub)：M5Stack Basic ■■ 
-(ファーム v1.10.1以前)
 
 /apps/
   +- SMM2_sub.py (子機メインプログラム : 親機のMACアドレスを記載)

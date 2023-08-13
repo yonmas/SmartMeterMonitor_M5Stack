@@ -279,7 +279,7 @@ def draw_graph_tp() :
 def draw_detail() :
     daily_cpd =  [0] * 8
     daily_tpd =  [0] * 8
-    len_max = 15
+    len_max = 20
 
     lcd.rect(0 , 0, 320, 224, 0x000000, 0x000000)
     lcd.font(lcd.FONT_Ubuntu)
@@ -590,7 +590,7 @@ def get_init_data() :
 ### 変数初期設定 ###
 
 # 親機のMACアドレス
-esp_mac_master = 'ff:ff:ff:ff:ff:ff'
+esp_mac_master = 'ffffffffffff' # コロンなし
 
 # 画面の明るさ
 brightness = 15
@@ -695,7 +695,7 @@ print('>> WiFi init OK')
 
 # WiFi & ESP NOW設定
 wifiCfg.wlan_ap.active(True)
-espnow.init()
+espnow.init(0)
 espnow.add_peer(esp_mac_master, id = 1)
 print('>> ESP NOW init')
 
