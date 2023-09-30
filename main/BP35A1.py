@@ -3,6 +3,7 @@ import logging
 import machine
 import utime
 import uos
+import ujson
 
 # global variables
 logger = None
@@ -47,7 +48,7 @@ def propfunc(func):
     return wrapper
 
 
-# date time function
+# date time function　　[y, m, d] の曜日を求める 0 = 日曜日　｛未使用｝
 def day_of_week(y, m, d):
     t = (0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4)
     if m < 3:
@@ -55,6 +56,7 @@ def day_of_week(y, m, d):
     return (y + y // 4 - y // 100 + y // 400 + t[m - 1] + d) % 7
 
 
+#　[y, m, d] が、1月1日から何日目かを求める
 def days_of_year(y, m, d):
     t = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
     if m > 2 and (y % 4 == 0) and (y % 100 == 0 or y % 400 != 0):
@@ -62,72 +64,48 @@ def days_of_year(y, m, d):
     return sum(t[:m - 1]) + d
 
 
+# 標準時から現在地時刻を求める (UTC+0900)
 def localtime():
     offset = 9 * 3600  # JST
     return utime.localtime()
 
 
+# [yyyy-mm-dd hh:mm:ss] -> [year, month, mday, hour, minute, second]
 def strftime(tm, *, fmt='{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}'):
     (year, month, mday, hour, minute, second) = tm[:6]
     return fmt.format(year, month, mday, hour, minute, second)
 
 
-def days_after_collect(collect_date): # 検針日からの経過日数
+# 直近の検針日 collect_date からの経過日数を求める
+def days_after_collect(collect_date):
     (year, month, today) = localtime()[:3]
-    days1 = days_of_year(year, month, today)
-    if today < collect_date[month] :    # 検針日より前なら
-        mday = collect_date[month - 1]      # 前月の検針日
+    days1 = days_of_year(year, month, today)  # days1 1月1日からの経過日数
+    if today < collect_date[month] :    # 今日が今月の検針日より前なら
+        mday = collect_date[month - 1]      # 起点は前月の検針日
         if month == 1 :                     # 検針日より前かつ1月なら
-            return 31 - mday + today
+            return 31 - mday + today        # 検針日からの経過日数を返す
         else :                              # 検針日より前で1月以外なら
-            days2 = days_of_year(year, month - 1, mday)
-    else :                              # 検針日以後なら
-        mday = collect_date[month]          # 当月の検針日
-        days2 = days_of_year(year, month, mday)
-    return days1 - days2
+            days2 = days_of_year(year, month - 1, mday) # 前月検針日の経過日数
+    else :                              # 今日が今月の検針日以後なら
+        mday = collect_date[month]          # 起点は当月の検針日
+        days2 = days_of_year(year, month, mday) # 今月検針日の経過日数
+    return days1 - days2  # [今日 - 直近検針日] を返す
 
-#     if month == 1 and today < collect_date[month]:
-#         return 31 - collect_date[month - 1] + today
-#     days1 = days_of_year(year, month, today)
-#     if today < collect_date[month]:
-#         month -= 1
-#         days2 = days_of_year(year, month, collect_date[month])
-#     else:
-#         days2 = days_of_year(year, month, collect_mday[month])
-#     return days1 - days2
 
-# オリジナル
-# def days_after_collect(collect_mday):
-#     (year, month, mday) = localtime()[:3]
-#     if month == 1:
-#         return 31 - collect_mday + mday
-#     days1 = days_of_year(year, month, mday)
-#     if mday < collect_mday:
-#         month -= 1
-#     days2 = days_of_year(year, month, collect_mday)
-#     return days1 - days2
+# 直近の検針日を求める
+def last_colect_day(collect_date) :
+    (year, month, today) = localtime()[:3]  # 今日の日付 today を求める
+    if today < collect_date[month] :    # 今日が今月の検針日より前なら
+        mday = collect_date[month - 1]      # 起点は前月の検針日
+        if month == 1 :                     # （検針日より前かつ）1月なら
+            year -= 1                           # 直近検針日は前年
+            month = 12                          # 直近検針日は12月
+        else :                              # （検針日より前）かつ1月以外なら
+            month -= 1                          # 直近検針日は前月
+    else :                              # 今日が今月の検針日以後なら
+        mday = collect_date[month]          # 起点は当月の検針日
+    return strftime((year, month, mday, 0, 0, 0))  # 直近の検針日を返す
 
-def last_colect_day(collect_date) : # 直近の検針日
-    (year, month, today) = localtime()[:3]
-    if today < collect_date[month] :    # 検針日より前なら
-        mday = collect_date[month - 1]      # 前月の検針日
-        if month == 1 :                     # 検針日より前かつ1月なら
-            year -= 1                           # 前年
-            month = 12                          # 12月
-        else :                              # 検針日より前で1月以外なら
-            month -= 1                          # 前月
-    else :                              # 検針日以後なら
-        mday = collect_date[month]          # 当月の検針日
-    return strftime((year, month, mday, 0, 0, 0))
-
-# オリジナル
-# def last_colect_day(collect_mday):
-#     (year, month, mday) = localtime()[:3]
-#     if month == 1:
-#         return (year - 1, 12, 31 - collect_mday + mday)
-#     if mday < collect_mday:
-#         month -= 1
-#     return strftime((year, month, collect_mday, 0, 0, 0))
 
 # クラス BP35A1 定義
 class BP35A1:
@@ -157,18 +135,14 @@ class BP35A1:
         self.password = password
         self.contract_amperage = int(contract_amperage)
         self.collect_date = collect_date
-        self.channel = None
-        self.pan_id = None
-        self.mac_addr = None
-        self.lqi = None
+
+        self.scan = {}  # 'Channel', 'Pan ID', 'Addr', 'LQI'
 
         self.ipv6_addr = None
         self.power_coefficient = None
         self.power_unit = None
 
-        # self.timeout   = 20
-        # self.timeout60 = 60
-
+    # uart をフラッシュ
     def flash(self):
         utime.sleep(0.5)
         while self.uart.any():
@@ -176,22 +150,24 @@ class BP35A1:
         self.uart.write('\r\n')
         utime.sleep(0.5)
 
-    def need_scan(self):
-        return not (self.channel and self.pan_id and self.mac_addr
-                    and self.lqi)
-
+    # スキャンデータをリセット
     def reset_scan(self):
         for file_name in uos.listdir('/flash') :
-            if file_name == 'SMM2_SCAN.txt' :
-                uos.remove('/flash/SMM2_SCAN.txt')
-        self.channel = self.pan_id = self.mac_addr = self.lqi = None
+            if file_name == 'SMM2_SCAN.json' :
+                uos.remove('/flash/SMM2_SCAN.json')
+
+        self.scan = {}
         self.power_coefficient = None
         self.power_unit = None
 
+
 # 初期化関数セクション
+
+    # BP53A1の初期化　'SKRESET' と 'SKSREG SFE 0'
     @skfunc
     def skInit(self):
-        return self.exec_command('SKRESET') and self.exec_command('SKSREG SFE 0') 
+        return (self.exec_command('SKRESET')
+                and self.exec_command('SKSREG SFE 0'))
 
     # ROPT で ERXUDPデータ表示形式を確認して、バイナリモードならASCIIモードに変更
     @iofunc
@@ -224,73 +200,64 @@ class BP35A1:
     def skVer(self): # 未使用
         return self.exec_command('SKVER')
 
+    # 以前のPANAセッション解除
     @skfunc
     def skTerm(self):
         return self.exec_command('SKTERM')
 
+    # Bルート認証：パスワード セット
     @skfunc
     def skSetPasswd(self):
         return self.exec_command('SKSETPWD C ', self.password)
 
+    # Bルート認証：ID セット
     @skfunc
     def skSetID(self):
         return self.exec_command('SKSETRBID ', self.id)
 
-    # Wi-SUN_SCAN.txtの存在/中身チェック関数
+    # SMM_SCAN.json があれば読み込む
     @skfunc
     def smm2_scan_filechk(self):
-        # global channel
-        # global panid
-        # global macadr
-        # global lqi
-
         scanfile_flg = False
         for file_name in uos.listdir('/flash') :
-            if file_name == 'SMM2_SCAN.txt' :
+            if file_name == 'SMM2_SCAN.json' :
                 scanfile_flg = True
         if scanfile_flg :
-            print('>> found [SMM2_SCAN.txt] !')
-            with open('/flash/SMM2_SCAN.txt' , 'r') as f :
-                for file_line in f :
-                    filetxt = file_line.strip().split(':')
-                    if filetxt[0] == 'Channel' :
-                        self.channel = filetxt[1]
-                        print('- Channel: ' + self.channel)
-                    elif filetxt[0] == 'Pan_ID' :
-                        self.pan_id = filetxt[1]
-                        print('- Pan_ID: ' + self.pan_id)
-                    elif filetxt[0] == 'MAC_Addr' :
-                        self.mac_addr = filetxt[1]
-                        print('- MAC_Addr: ' + self.mac_addr)
-                    elif filetxt[0] == 'LQI' :
-                        self.lqi = filetxt[1]
-                        print('- LQI: ' + self.lqi)
-                    elif filetxt[0] == 'COEFFICIENT' :
-                        print('- COEFFICIENT: ',filetxt[1])
-                        self.power_coefficient = int(filetxt[1])
-                        print('- COEFFICIENT: ' + str(self.power_coefficient))
-                    elif filetxt[0] == 'UNIT' :
-                        print('- UNIT: ',filetxt[1])
-                        self.power_unit = float(filetxt[1])
-                        print('- UNIT: ' + str(self.power_unit))
-            if len(self.channel) == 2 and len(self.pan_id) == 4 and len(self.mac_addr) == 16 and len(self.lqi) == 2:
-                print('self.channel =', self.channel, type(self.channel))
-                print('self.pan_id =', self.pan_id, type(self.pan_id))
-                print('self.mac_addr =', self.mac_addr, type(self.mac_addr))
-                print('self.lqi =', self.lqi, type(self.lqi))
+            print('>> found [SMM2_SCAN.json] !')
+            with open('/flash/SMM2_SCAN.json') as f :
+                d = ujson.load(f)
+                self.scan = d
+
+            # 各要素の文字数でデータチェック
+            if (len(str(self.scan.get('Channel'))) == 2
+                and len(str(self.scan.get('Pan ID'))) == 4
+                and len(str(self.scan.get('Addr'))) == 16
+                and len(str(self.scan.get('LQI'))) == 2):
+
+                print('Channel =', self.scan['Channel'])
+                print('Pan id =', self.scan['Pan ID'])
+                print('Addr =', self.scan['Addr'])
+                print('LQI =', self.scan['LQI'])
+
                 scanfile_flg = True
+
             else :
-                print('>> [SMM2_SCAN.txt] Illegal!!')
+                print('>> [SMM2_SCAN.json] Illegal!!')
                 scanfile_flg = False
+
         else :
-            print('>> no [SMM2_SCAN.txt] !')
+            print('>> no [SMM2_SCAN.json] !')
         return scanfile_flg
 
+    # アクティブスキャン実行　：　結果を SMM_SCAN.json に書き出す
     @skfunc
     def skScan(self, duration=4):
         while duration <= 7:
             self.reset_scan()
             self.writeln('SKSCAN 2 FFFFFFFF ' + str(duration))
+
+            self.scan = {} # 必要か？？
+
             while True:
                 ln = self.readln()
                 if ln.startswith('EVENT 22'):
@@ -298,27 +265,23 @@ class BP35A1:
 
                 if ':' in ln:
                     key, val = ln.decode().strip().split(':')[:2]
-                    if key == 'Channel':
-                        self.channel = val
-                    elif key == 'Pan ID':
-                        self.pan_id = val
-                    elif key == 'Addr':
-                        self.mac_addr = val
-                    elif key == 'LQI':
-                        self.lqi = val
+                    self.scan[key] = val
 
-            if len(str(self.channel)) == 2 and len(str(self.pan_id)) == 4 and len(str(self.mac_addr)) == 16 and len(str(self.lqi)) == 2 :
-            # if self.channel and self.pan_id and self.mac_addr and self.lqi:
-                print('self.channel =', self.channel, type(self.channel))
-                print('self.pan_id =', self.pan_id, type(self.pan_id))
-                print('self.mac_addr =', self.mac_addr, type(self.mac_addr))
-                print('self.lqi =', self.lqi, type(self.lqi))
-                with open('/flash/SMM2_SCAN.txt' , 'w') as f:
-                    f.write('Channel:' + str(self.channel) + '\r\n')
-                    f.write('Pan_ID:' + str(self.pan_id) + '\r\n')
-                    f.write('MAC_Addr:' + str(self.mac_addr) + '\r\n')
-                    f.write('LQI:' + str(self.lqi) + '\r\n')
-                    print('>> [SMM2_SCAN.txt] maked!!')
+            # 各要素の文字数でデータチェック
+            if (len(str(self.scan.get('Channel'))) == 2
+                and len(str(self.scan.get('Pan ID'))) == 4
+                and len(str(self.scan.get('Addr'))) == 16
+                and len(str(self.scan.get('LQI'))) == 2):
+
+                print('Channel =', self.scan['Channel'])
+                print('Pan id =', self.scan['Pan ID'])
+                print('Addr =', self.scan['Addr'])
+                print('LQI =', self.scan['LQI'])
+
+                with open ('/flash/SMM2_SCAN.json' , 'w') as f:
+                    ujson.dump(self.scan, f)
+                    print('>> [SMM2_SCAN.json] maked!!')
+
                 print('Scan All Clear!')
                 scanOK = True
                 return True
@@ -327,9 +290,10 @@ class BP35A1:
 
         return False
 
+    # IPV6アドレスの取得
     @skfunc
     def skLL64(self):
-        self.writeln('SKLL64 ' + self.mac_addr)
+        self.writeln('SKLL64 ' + self.scan['Addr'])
         while True:
             ln = self.readln()
             val = ln.decode().strip()
@@ -337,14 +301,17 @@ class BP35A1:
                 self.ipv6_addr = val
                 return True
 
+    # 無線CH設定
     @skfunc
     def skSetChannel(self):
-        return self.exec_command('SKSREG S2 ', self.channel)
+        return self.exec_command('SKSREG S2 ', self.scan['Channel'])
 
+    # 受信PAN-IDの設定
     @skfunc
     def skSetPanID(self):
-        return self.exec_command('SKSREG S3 ', self.pan_id)
+        return self.exec_command('SKSREG S3 ', self.scan['Pan ID'])
 
+    # スマートメーターに接続
     @skfunc
     def skJoin(self):
         self.writeln('SKJOIN ' + self.ipv6_addr)
@@ -445,7 +412,7 @@ class BP35A1:
         print('### skInit START ###')
         if not self.skInit():
             print('not skIinit')
-            return False 
+            return False
         print('skInit-end')
 
         # ERXUDPデータ表示形式がバイナリモードならASCIIモードへ変更
@@ -463,11 +430,15 @@ class BP35A1:
         while True:
             try:
                 # スマートメーターのスキャン
+
+                ### アクティブスキャンの要否を同じ条件で二重にチェックしている。確認・整理！！！！
+                ### self.smm2_scan_filechk() self.need_scan() は同じでは？？
+
                 self.progress(40)
-                print('設定ファイルの確認', self.smm2_scan_filechk())
-                if self.need_scan() :
+                print('設定ファイルの確認')
+                if self.smm2_scan_filechk() is False:
                     print('設定ファイルがなかったのでアクティブスキャン実行')
-                    if not self.skScan():
+                    if not self.skScan():  # アクティブスキャン実行
                         continue
                 else :
                     print('設定ファイルがあったのでアクティブスキャンはスキップ')
@@ -493,28 +464,23 @@ class BP35A1:
                 self.progress(80)
                 if self.power_coefficient == None :
                     self.power_coefficient = self.read_propaty('D3')
-                    print('self.power_coefficient を受信した')
-                    with open('/flash/SMM2_SCAN.txt' , 'a') as fc:
-                        print('self.power_coefficient を書き込む')
-                        fc.write('COEFFICIENT:' + str(self.power_coefficient) + '\r\n')
-                        print('self.power_coefficient を書き込んだ',self.power_coefficient)
-                print('## power_coefficient =',  self.power_coefficient, type(self.power_coefficient))
+                print('## power_coefficient =',  self.power_coefficient)
                 utime.sleep(1)
 
                 # 積算電力量単位(E1)の取得
                 self.progress(90)
                 if self.power_unit == None :
                     self.power_unit = self.read_propaty('E1')
-                    print('self.power_unit を受信した')
-                    with open('/flash/SMM2_SCAN.txt' , 'a') as fc:
-                        print('self.power_unit を書き込む')
-                        fc.write('UNIT:' + str(self.power_unit) + '\r\n')
-                        print('self.power_unit を書き込んだ',str(self.power_unit))
-                print('## self.power_unit =',  self.power_unit, type(self.power_unit))
+                print('## self.power_unit =',  self.power_unit)
                 utime.sleep(1)
 
+                # 処理ループ終了 return
                 self.progress(100)
-                return (self.channel, self.pan_id, self.mac_addr, self.lqi, self.power_coefficient * self.power_unit)
+                return (self.scan['Channel'],
+                        self.scan['Pan ID'],
+                        self.scan['Addr'],
+                        self.scan['LQI'],
+                        self.power_coefficient * self.power_unit)
 
             except Exception as e:
                 logger.error(e)
@@ -572,14 +538,18 @@ class BP35A1:
         # 積算電力量計測値履歴１(E2)の取得
         utime.sleep(1)
         (days, collected_power) = self.read_propaty('E2', timeout60)
-        (days, collected_power) = (days, int(collected_power[0:0 + 8],16) * self.power_coefficient * self.power_unit )
+        (days, collected_power) = (days, int(collected_power[0:0 + 8],16)
+                                   * self.power_coefficient * self.power_unit)
 
         # 定時積算電力量計測値(EA)の取得
         utime.sleep(1)
         (created, power) = self.read_propaty('EA')
 
         # 前回検針日と定時積算電力量計測値(EA)との差分
-        return (last_colect_day(self.collect_date), power - collected_power, created, power)
+        return (last_colect_day(self.collect_date),
+                power - collected_power,
+                created,
+                power)
 
     def close(self):
         """
@@ -587,8 +557,8 @@ class BP35A1:
         """
         self.skTerm()
 
+    # 'OK' が返ってきたら True、　’FAIL' が返ってきたら False
     def wait_for_ok(self):
-#         ln = None
         while True :
             if self.uart.any() != 0 :
                 ln = self.readln()
@@ -670,24 +640,24 @@ class BP35A1:
     
                 # 定時積算電力量
                 if esv == '72' and epc == 'EA':
-                    (year, month, mday, hour, minute,
-                     second) = (int(data[-22:-22 + 4],
-                                    16), int(data[-18:-18 + 2],
-                                             16), int(data[-16:-16 + 2], 16),
-                                int(data[-14:-14 + 2],
-                                    16), int(data[-12:-12 + 2],
-                                             16), int(data[-10:-10 + 2], 16))
-                    created = strftime((year, month, mday, hour, minute, second))
-                    power = int(data[-8:],
-                                16) * self.power_coefficient * self.power_unit
+                    (year, month, mday, hour, minute, second) = (
+                        int(data[-22:-22 + 4], 16),
+                        int(data[-18:-18 + 2], 16),
+                        int(data[-16:-16 + 2], 16),
+                        int(data[-14:-14 + 2], 16),
+                        int(data[-12:-12 + 2], 16),
+                        int(data[-10:-10 + 2], 16)
+                        )
+                    created = strftime(
+                        (year, month, mday, hour, minute, second))
+                    power = (int(data[-8:], 16) * self.power_coefficient
+                             * self.power_unit)
+
                     return created, power
             
             ut = utime.time()
 
         raise Exception('BP35A1.wait_for_data() timeout.')
-
-    def close(self):
-        self.skTerm()
 
 
 if __name__ == '__main__':
