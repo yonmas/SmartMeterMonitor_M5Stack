@@ -1,6 +1,6 @@
 # M5StickC/M5Stack でスマートメーター・モニタリング with Wi-SUN HAT
 
-## [新しいバージョンがあります](https://github.com/yonmas/SMM3-SmartMeterMonitor_v3)
+## [【新しいバージョン(v.3)があります】](https://github.com/yonmas/SMM3-SmartMeterMonitor_v3)
 
 ![Collage_Fotor](https://user-images.githubusercontent.com/104808539/166885813-86737337-00c2-421f-a8a8-5c4fb0433924.jpg)
 
